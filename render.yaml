@@ -5,8 +5,6 @@ services:
     env: docker
     dockerfilePath: ./backend/Dockerfile
     dockerContext: ./backend
-    region: singapore
-    plan: free
     healthCheckPath: /api/v1/health
     envVars:
       - key: DATABASE_URL
@@ -28,8 +26,6 @@ services:
     env: static
     buildCommand: cd frontend && npm install && npm run build
     staticPublishPath: ./frontend/dist
-    region: singapore
-    plan: free
     routes:
       - type: rewrite
         source: /*
@@ -39,12 +35,10 @@ services:
         fromService:
           type: web
           name: urbanheat-backend
-          property: url
+          property: host
 
 databases:
   # 3. PostGIS Database
   - name: urbanheat-db
     databaseName: urbanheat_db
-    user: postgres
-    region: singapore
     plan: free
