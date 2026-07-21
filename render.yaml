@@ -1,0 +1,50 @@
+services:
+  # 1. FastAPI Backend Service (Docker container)
+  - type: web
+    name: urbanheat-backend
+    env: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    region: singapore
+    plan: free
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: urbanheat-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: 1440
+      - key: PROJECT_NAME
+        value: UrbanHeatAI Backend
+
+  # 2. React Frontend Static Site (Vite Build)
+  - type: web
+    name: urbanheat-frontend
+    env: static
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: ./frontend/dist
+    region: singapore
+    plan: free
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: urbanheat-backend
+          property: url
+
+databases:
+  # 3. PostGIS Database
+  - name: urbanheat-db
+    databaseName: urbanheat_db
+    user: postgres
+    region: singapore
+    plan: free

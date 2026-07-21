@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+frontend/node_modules/
+backend/venv/
+backend/__pycache__/
+*.pyc
+
+# Production Builds
+dist/
+frontend/dist/
+
+# Local Environment Variables
+.env
+.env.local
+*.log
+
+# Databases & Large Data
+backend/data/
+postgres_data/
+*.sqlite3
+*.db
+isro_project_submission.zip

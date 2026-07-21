@@ -1,0 +1,162 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Premium Dark Space Theme Console Variables */
+  --console-bg: #0B0F19;
+  --console-surface: #121826;
+  --console-border: #1F2937;
+  --console-text: #E8EAF0;
+  --console-textSec: #8B95A7;
+  --console-accent: #E8622C;
+
+  --console-status-extreme: #DC2626;
+  --console-status-extreme-bg: rgba(220, 38, 38, 0.05);
+  --console-status-extreme-border: rgba(220, 38, 38, 0.2);
+
+  --console-status-high: #F97316;
+  --console-status-high-bg: rgba(249, 115, 22, 0.05);
+  --console-status-high-border: rgba(249, 115, 22, 0.2);
+
+  --console-status-medium: #EAB308;
+  --console-status-medium-bg: rgba(234, 179, 8, 0.05);
+  --console-status-medium-border: rgba(234, 179, 8, 0.2);
+
+  --console-status-low: #22C55E;
+  --console-status-low-bg: rgba(34, 197, 94, 0.05);
+  --console-status-low-border: rgba(34, 197, 94, 0.2);
+
+  --console-grid: rgba(139, 149, 167, 0.06);
+}
+
+@layer base {
+  body {
+    @apply font-sans antialiased overflow-x-hidden;
+    background-color: var(--console-bg);
+    color: var(--console-text);
+  }
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--console-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--console-border);
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--console-accent);
+}
+
+/* Telemetry scanlines & scientific grid overlay */
+.telemetry-grid {
+  background-size: 32px 32px;
+  background-image: linear-gradient(to right, var(--console-grid) 1px, transparent 1px),
+                    linear-gradient(to bottom, var(--console-grid) 1px, transparent 1px);
+}
+
+/* Flat precise panels - No glassmorphism, no soft shadows, 4px max corner radius */
+.glass-panel {
+  background: var(--console-surface);
+  border: 1px solid var(--console-border);
+  border-radius: 4px;
+  box-shadow: none;
+}
+
+.glass-panel-hover {
+  transition: border-color 0.2s ease;
+}
+.glass-panel-hover:hover {
+  border-color: var(--console-accent);
+}
+
+/* Leaflet Map overrides for flat theme */
+.leaflet-container {
+  background: var(--console-bg) !important;
+  font-family: inherit;
+}
+
+.leaflet-bar {
+  border: 1px solid var(--console-border) !important;
+  box-shadow: none !important;
+}
+
+.leaflet-bar a {
+  background-color: var(--console-surface) !important;
+  border-bottom: 1px solid var(--console-border) !important;
+  color: var(--console-text) !important;
+  transition: all 0.2s;
+}
+
+.leaflet-bar a:hover {
+  background-color: var(--console-accent) !important;
+  color: var(--console-bg) !important;
+}
+
+.leaflet-popup-content-wrapper {
+  background: var(--console-surface) !important;
+  color: var(--console-text) !important;
+  border: 1px solid var(--console-border) !important;
+  border-radius: 4px !important;
+  box-shadow: none !important;
+}
+
+.leaflet-popup-tip {
+  background: var(--console-surface) !important;
+  border: 1px solid var(--console-border) !important;
+}
+
+/* Page Load Sweep Animation for signature element */
+@keyframes thermalSweep {
+  0% {
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  100% {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+}
+
+.thermal-sweep {
+  animation: thermalSweep 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Shimmer Animation fallback */
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.shimmer-sweep {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-sweep::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.02) 20%,
+    rgba(255, 255, 255, 0.05) 60%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: shimmer 2s infinite;
+  content: '';
+}
