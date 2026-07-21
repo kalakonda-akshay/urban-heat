@@ -1,32 +1,35 @@
-from shapely.geometry import shape, mapping
-from shapely.wkb import loads
-from geoalchemy2.shape import to_shape
+"""
+geo_helpers.py - lightweight geometry utilities (no shapely/geoalchemy2 required).
+Works with plain Python dicts for GeoJSON.
+"""
 from typing import Dict, Any
+
 
 def geojson_to_wkt(geojson: Dict[str, Any]) -> str:
     """
-    Converts a GeoJSON geometry dictionary to a WKT string with SRID 4326.
+    Convert a simple GeoJSON Polygon to WKT string.
+    Supports Polygon type only (sufficient for ward-level data).
     """
+    if geojson is None:
+        return ""
     try:
-        geom = shape(geojson)
-        return f"SRID=4326;{geom.wkt}"
-    except Exception as e:
-        raise ValueError(f"Invalid GeoJSON geometry: {str(e)}")
-
-def wkb_to_geojson(wkb_element) -> Dict[str, Any]:
-    """
-    Converts a GeoAlchemy2 WKB element to a GeoJSON geometry dictionary.
-    """
-    if wkb_element is None:
-        return {}
-    try:
-        # Attempt conversion using geoalchemy2 to_shape
-        geom = to_shape(wkb_element)
-        return mapping(geom)
+        geom_type = geojson.get("type", "")
+        coords = geojson.get("coordinates", [])
+        if geom_type == "Polygon" and coords:
+            ring = coords[0]
+            pts = ", ".join(f"{x} {y}" for x, y in ring)
+            return f"SRID=4326;POLYGON(({pts}))"
+        return ""
     except Exception:
-        try:
-            # Fallback direct WKB load
-            geom = loads(bytes(wkb_element.data))
-            return mapping(geom)
-        except Exception:
-            return {}
+        return ""
+
+
+def wkb_to_geojson(value: Any) -> Dict[str, Any]:
+    """
+    If the value is already a dict (JSON column), return it directly.
+    """
+    if value is None:
+        return {}
+    if isinstance(value, dict):
+        return value
+    return {}
