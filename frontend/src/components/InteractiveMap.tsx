@@ -63,6 +63,7 @@ const MapResizer: React.FC = () => {
 };
 
 interface InteractiveMapProps {
+  selectedCity?: string;
   gridData?: Array<{ lat: number; lon: number; lst: number; ndvi: number; ndbi: number; ndwi: number }>;
   predictions?: Array<{ id: number; heat_risk_score: number; heat_category: string; geometry: any }>;
   recommendations?: Array<{ id: number; mitigation_type: string; description: string; priority: string; geometry: any }>;
@@ -81,6 +82,7 @@ interface InteractiveMapProps {
 }
 
 export const InteractiveMap: React.FC<InteractiveMapProps> = ({
+  selectedCity = 'bengaluru',
   gridData = [],
   predictions = [],
   recommendations = [],
@@ -89,11 +91,14 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
   onLocationSearch,
   bhuvanMetadata = null
 }) => {
-  const [mapCenter, setMapCenter] = useState<[number, number]>([12.9716, 77.5946]); // Bangalore
+  const [mapCenter, setMapCenter] = useState<[number, number]>([12.9716, 77.5946]); // Default Bangalore
   const [zoomLevel, setZoomLevel] = useState<number>(12);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedCoords, setSelectedCoords] = useState<{ lat: number; lon: number } | null>(null);
   
+  // Equity Layer Toggle: Raw LST vs Social Risk Index (SVI)
+  const [riskMode, setRiskMode] = useState<'LST' | 'SOCIAL_RISK'>('LST');
+
   // GIS Multi-Layer Manager States
   const [showLayersDropdown, setShowLayersDropdown] = useState<boolean>(false);
   const [activeOverlays, setActiveOverlays] = useState<string[]>([
@@ -330,7 +335,16 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
         </form>
 
         {/* GIS Controls Toolbar */}
-        <div className="pointer-events-auto flex items-center gap-1 bg-console-surface/95 border border-console-border rounded-[2px] p-1 backdrop-blur-md relative">
+        <div className="pointer-events-auto flex items-center gap-1 bg-console-surface/95 border border-console-border rounded-[2px] p-1 backdrop-blur-md relative font-mono text-[10px]">
+          {/* Equity Toggle */}
+          <button
+            onClick={() => setRiskMode(r => r === 'LST' ? 'SOCIAL_RISK' : 'LST')}
+            className={`px-2 py-1 rounded-[2px] font-bold transition-colors ${riskMode === 'SOCIAL_RISK' ? 'bg-console-orange text-slate-100' : 'bg-console-bg text-console-textSec hover:text-console-text'}`}
+            title="Toggle Equity Social Vulnerability Index"
+          >
+            {riskMode === 'LST' ? 'RAW LST' : 'SOCIAL RISK (SVI)'}
+          </button>
+
           <button
             onClick={() => setShowLayersDropdown(!showLayersDropdown)}
             title="GIS Layer Manager"

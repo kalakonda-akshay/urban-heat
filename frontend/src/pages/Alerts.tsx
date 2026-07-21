@@ -14,6 +14,26 @@ interface AlertItem {
 
 const MOCK_ALERTS: AlertItem[] = [
   {
+    id: 'ANOMALY-01',
+    title: 'UNEXPLAINED THERMAL SPIKE (ANOMALY DETECTED)',
+    zone: 'Ward C - Whitefield Industrial Sector 4',
+    timestamp: '2026-07-21 15:10:00 UTC',
+    temp: 42.8,
+    severityScore: 0.98,
+    status: 'UNRESOLVED',
+    details: 'Thermal Anomaly Engine flags +4.3°C unexplained heat spike above expected baseline (actual 42.8°C vs modeled 38.5°C). Investigating unrecorded industrial emission & canopy clearing.'
+  },
+  {
+    id: 'ANOMALY-02',
+    title: 'COASTAL HEAT TRAPPING ANOMALY',
+    zone: 'Zone 9 - T. Nagar Commercial Corridor',
+    timestamp: '2026-07-21 14:45:00 UTC',
+    temp: 41.2,
+    severityScore: 0.93,
+    status: 'INVESTIGATING',
+    details: 'Thermal Anomaly Engine flags +3.4°C spike driven by high humidity thermal trapping and illegal asphalt paving over urban drainage.'
+  },
+  {
     id: 'ALT-9042',
     title: 'Extreme Radiance Anomaly Lock',
     zone: 'Ward C - Whitefield Industrial Sector 4',

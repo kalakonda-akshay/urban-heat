@@ -1,3 +1,7 @@
+export type Language = 'en' | 'hi' | 'kn' | 'ta' | 'te' | 'bho';
+
+export type CityId = 'bengaluru' | 'chennai' | 'madurai' | 'hyderabad';
+
 export interface User {
   id: number;
   email: string;
@@ -12,6 +16,32 @@ export interface SpatialZone {
   description: string | null;
   geometry: any; // GeoJSON
   created_at: string;
+}
+
+export interface SocialVulnerability {
+  elderlyDensityPct: number;
+  informalSettlementPct: number;
+  canopyDeficitPct: number;
+  sviScore: number; // 0.0 - 1.0
+  realWorldRiskScore: number; // LST weighted by SVI
+}
+
+export interface ThermalAnomaly {
+  isAnomaly: boolean;
+  expectedLst: number;
+  deltaSpike: number;
+  possibleCause: string;
+}
+
+export interface PolicyBrief {
+  wardName: string;
+  treesPlanted: number;
+  coolRoofPct: number;
+  projectedCoolingDelta: number;
+  timelineYears: number;
+  benefitedPopulation: number;
+  estimatedBudgetInr: string;
+  carbonOffsetTons: number;
 }
 
 export interface RasterIndex {
@@ -68,5 +98,19 @@ export interface WardReportMetric {
   vulnerability_index: number;
   dominant_category: string;
   recommended_actions: string[];
+  vulnerability?: SocialVulnerability;
+  anomaly?: ThermalAnomaly;
   geometry: any;
+}
+
+export interface CityConfig {
+  id: CityId;
+  name: string;
+  state: string;
+  lat: number;
+  lon: number;
+  zoom: number;
+  baselineTemp: number;
+  population: string;
+  wards: WardReportMetric[];
 }

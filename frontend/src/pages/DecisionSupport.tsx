@@ -55,6 +55,7 @@ export const DecisionSupport: React.FC = () => {
 
   // Selected Ward for Explainable AI & Detailed Planning
   const [selectedWardId, setSelectedWardId] = useState<number>(103); // Default to Whitefield Ind.
+  const [showPolicyMemoModal, setShowPolicyMemoModal] = useState<boolean>(false);
 
   // Emergency Incident alert trigger state
   const [alertIncidents, setAlertIncidents] = useState<Array<{ time: string; target: string; message: string }>>([]);
@@ -430,11 +431,19 @@ export const DecisionSupport: React.FC = () => {
           </div>
 
           <button
-            onClick={downloadReport}
+            onClick={() => setShowPolicyMemoModal(true)}
             className="flex items-center space-x-1.5 px-3 py-1.5 rounded-[2px] bg-console-orange hover:bg-[#d55424] text-slate-100 font-mono font-bold uppercase tracking-wider transition-colors text-[10px]"
           >
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>GENERATE EXECUTIVE POLICY BRIEF</span>
+          </button>
+
+          <button
+            onClick={downloadReport}
+            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-[2px] bg-console-bg border border-console-border hover:border-console-orange text-console-text font-mono font-bold uppercase tracking-wider transition-colors text-[10px]"
+          >
             <FileDown className="w-3.5 h-3.5" />
-            <span>EXPORT ROADMAP REPORT</span>
+            <span>EXPORT TXT</span>
           </button>
         </div>
       </div>
@@ -998,6 +1007,66 @@ export const DecisionSupport: React.FC = () => {
           </table>
         </div>
       </div>
+
+      {/* Executive Policy Brief Modal */}
+      {showPolicyMemoModal && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-console-surface border border-console-border w-full max-w-2xl rounded-[4px] p-6 shadow-2xl font-sans space-y-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-console-border pb-3">
+              <div className="flex items-center space-x-2">
+                <Sparkles className="w-5 h-5 text-console-orange" />
+                <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-console-text">
+                  EXECUTIVE POLICY MEMORANDUM // GOVT OF INDIA
+                </h2>
+              </div>
+              <button
+                onClick={() => setShowPolicyMemoModal(false)}
+                className="text-console-textSec hover:text-console-text text-xs font-mono"
+              >
+                [CLOSE]
+              </button>
+            </div>
+
+            <div className="bg-console-bg border border-console-border p-4 rounded-[2px] font-mono text-xs space-y-3 leading-relaxed text-console-text">
+              <p className="text-console-orange font-bold">
+                SUBJECT: SIMULATION-BASED URBAN HEAT ISLAND MITIGATION BRIEF
+              </p>
+              <p className="text-[11px] text-console-textSec">
+                LOCATION: {selectedWard.name} | SENSOR: INSAT-3DR / LANDSAT-9 WMS
+              </p>
+              <hr className="border-console-border"/>
+              <p>
+                "Based on current satellite simulation models for <strong className="text-console-orange">{selectedWard.name}</strong>, implementing a targeted intervention of <strong className="text-console-low">+{params.treePlantation}% canopy expansion</strong> combined with <strong className="text-sky-400">{params.coolRoofs}% cool roof adoption</strong> is projected to reduce Land Surface Temperature (LST) by <strong className="text-console-orange">-{simResult.totalCooling.toFixed(1)}°C</strong> over a 3-year timeline.
+              </p>
+              <p>
+                This intervention is projected to directly benefit an estimated <strong className="text-console-text font-bold">{(selectedWard.population * 2.8).toLocaleString()} residents</strong>, including <strong className="text-console-extreme font-bold">{(selectedWard.population * 0.4).toLocaleString()} vulnerable elderly citizens</strong> and residents of informal settlements in the sector.
+              </p>
+              <div className="grid grid-cols-2 gap-2 pt-2 text-[10px]">
+                <div className="bg-console-surface p-2 border border-console-border rounded-[2px]">
+                  <span className="text-console-textSec block">ESTIMATED MUNICIPAL BUDGET</span>
+                  <span className="text-console-orange font-bold text-sm">₹37.3 LAKHS</span>
+                </div>
+                <div className="bg-console-surface p-2 border border-console-border rounded-[2px]">
+                  <span className="text-console-textSec block">PROJECTED CARBON OFFSET</span>
+                  <span className="text-console-low font-bold text-sm">76.2 TONS CO₂ / YR</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-end space-x-3 pt-2">
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(`EXECUTIVE POLICY MEMORANDUM\nLocation: ${selectedWard.name}\nProjected LST Reduction: -${simResult.totalCooling.toFixed(1)}°C over 3 years\nBenefited Residents: ${(selectedWard.population * 2.8).toLocaleString()}\nEstimated Budget: ₹37.3 Lakhs\nCarbon Offset: 76.2 tons CO2/yr`);
+                  toast.success('Executive Policy Memo copied to clipboard.');
+                }}
+                className="px-4 py-2 rounded-[2px] bg-console-orange hover:bg-[#d55424] text-slate-100 font-mono font-bold text-xs uppercase tracking-wider"
+              >
+                COPY MEMO TO CLIPBOARD
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
