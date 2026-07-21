@@ -1,18 +1,11 @@
 FROM python:3.10-slim
 
-# Install system dependencies
+# Install only lightweight system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     g++ \
-    gdal-bin \
-    libgdal-dev \
-    python3-dev \
-    libspatialindex-dev \
+    libpq-dev \
     && rm -rf /var/lib/apt/lists/*
-
-# Set environment variables for GDAL
-ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
-ENV C_INCLUDE_PATH=/usr/include/gdal
 
 WORKDIR /app
 
